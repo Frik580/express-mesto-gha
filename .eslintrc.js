@@ -2,13 +2,15 @@ module.exports = {
   env: {
     es2021: true,
   },
-  extends: ['eslint: recommended', 'plugin:react/recommended', 'airbnb-base'],
+  extends: ["eslint: recommended", "plugin:react/recommended", "airbnb-base"],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 'latest',
-    sourceType: 'module',
+    ecmaVersion: "latest",
+    sourceType: "module",
   },
-  rules: { "allow": ["_id"] },
+  rules: {
+    "no-underscore-dangle": ["error", { allow: ["_id"] }],
+  },
 };
