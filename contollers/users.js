@@ -22,8 +22,15 @@ const getUser = (req, res) => {
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
+      console.log(err.name);
       if (err.name === "UserNotFound") {
         res.status(err.status).send({ message: err.message });
+      } else if (err.name === "CastError") {
+        res
+          .status(400)
+          .send({
+            message: "Передан некорректный _id",
+          });
       } else {
         res.status(500).send({ message: "Ошибка сервера" });
       }
