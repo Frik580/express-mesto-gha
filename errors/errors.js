@@ -26,4 +26,10 @@ class IdNotFound extends ApplicationError {
   }
 }
 
-module.exports = { UserNotFound, CardNotFound, IdNotFound };
+const errorStatus = {
+  notCorrect: "400",
+  notFound: "404",
+  serverError: "500",
+}
+
+module.exports = { UserNotFound, CardNotFound, IdNotFound, errorStatus };

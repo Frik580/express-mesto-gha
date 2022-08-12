@@ -1,5 +1,6 @@
 const User = require("../models/user");
-const { UserNotFound } = require("../errors/errors");
+const { UserNotFound, errorStatus } = require("../errors/errors");
+const { notCorrect, serverError } = errorStatus;
 
 const createUser = (req, res) => {
   User.create(req.body)
@@ -8,9 +9,13 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({ message: "Переданы некорректные данные при создании пользователя" });
+        res.status(notCorrect).send({
+          message: "Переданы некорректные данные при создании пользователя",
+        });
       } else {
-        res.status(500).send({ message: "Ошибка сервера" });
+        res
+          .status(serverError)
+          .send({ message: "На сервере произошла ошибка" });
       }
     });
 };
@@ -26,13 +31,13 @@ const getUser = (req, res) => {
       if (err.name === "UserNotFound") {
         res.status(err.status).send({ message: err.message });
       } else if (err.name === "CastError") {
-        res
-          .status(400)
-          .send({
-            message: "Передан некорректный _id",
-          });
+        res.status(notCorrect).send({
+          message: "Передан некорректный _id",
+        });
       } else {
-        res.status(500).send({ message: "Ошибка сервера" });
+        res
+          .status(serverError)
+          .send({ message: "На сервере произошла ошибка" });
       }
     });
 };
@@ -42,7 +47,7 @@ const getAllUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
     .catch((err) => {
-      res.status(500).send({ message: "Ошибка сервера" });
+      res.status(serverError).send({ message: "На сервере произошла ошибка" });
     });
 };
 
@@ -65,13 +70,13 @@ const updateUser = (req, res) => {
       if (err.name === "UserNotFound") {
         res.status(err.status).send({ message: err.message });
       } else if (err.name === "ValidationError") {
-        res
-          .status(400)
-          .send({
-            message: "Переданы некорректные данные при обновлении профиля",
-          });
+        res.status(notCorrect).send({
+          message: "Переданы некорректные данные при обновлении профиля",
+        });
       } else {
-        res.status(500).send({ message: "Ошибка сервера" });
+        res
+          .status(serverError)
+          .send({ message: "На сервере произошла ошибка" });
       }
     });
 };
@@ -95,13 +100,13 @@ const updateAvatar = (req, res) => {
       if (err.name === "UserNotFound") {
         res.status(err.status).send({ message: err.message });
       } else if (err.name === "ValidationError") {
-        res
-          .status(400)
-          .send({
-            message: "Переданы некорректные данные при обновлении аватара",
-          });
+        res.status(notCorrect).send({
+          message: "Переданы некорректные данные при обновлении аватара",
+        });
       } else {
-        res.status(500).send({ message: "Ошибка сервера" });
+        res
+          .status(serverError)
+          .send({ message: "На сервере произошла ошибка" });
       }
     });
 };

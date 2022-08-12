@@ -4,6 +4,8 @@ const usersRouter = require("./routes/users");
 const cardsRouter = require("./routes/cards");
 const path = require("path");
 const app = express();
+const { errorStatus } = require("./errors/errors");
+const { notFound } = errorStatus;
 
 const { PORT = 3000 } = process.env;
 
@@ -20,7 +22,7 @@ app.use(logger);
 
 app.use((req, res, next) => {
   req.user = {
-    _id: "62f54f3aabd0c551a2b57870", // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: "62f54f3aabd0c551a2b57870",
   };
 
   next();
@@ -29,11 +31,9 @@ app.use((req, res, next) => {
 app.use("/", usersRouter);
 app.use("/", cardsRouter);
 app.use("*", (req, res) => {
-  res
-    .status(404)
-    .send({
-      message: "Страница не найдена",
-    });
+  res.status(notFound).send({
+    message: "Страница не найдена",
+  });
 });
 
 app.listen(PORT, () => {

@@ -1,14 +1,20 @@
-const router = require("express").Router(); // создали роутер
-const { createCard, deleteCard, getAllCards, likeCard, dislikeCard } = require("../contollers/cards");
+const router = require("express").Router();
+const {
+  createCard,
+  deleteCard,
+  getAllCards,
+  likeCard,
+  dislikeCard,
+} = require("../contollers/cards");
 
-router.get("/cards", getAllCards); // возвращает все карточки
+router.get("/cards", getAllCards);
 
-router.delete("/cards/:cardId", deleteCard); // удаляет карточку по _id
+router.delete("/cards/:cardId", deleteCard);
 
-router.post("/cards", createCard); // создает новую карточку
+router.post("/cards", createCard);
 
-router.put("/cards/:cardId/likes", likeCard); // добавление лайка карточке
+router.put("/cards/:cardId/likes", likeCard);
 
-router.delete("/cards/:cardId/likes", dislikeCard); // удаление лайка карточке
+router.delete("/cards/:cardId/likes", dislikeCard);
 
-module.exports = router; // экспортировали роутер
+module.exports = router;
