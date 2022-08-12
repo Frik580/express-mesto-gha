@@ -1,5 +1,5 @@
 const Card = require("../models/card");
-const { CardNotFound } = require("../errors/errors");
+const { CardNotFound, IdNotFound } = require("../errors/errors");
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -9,7 +9,9 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({ message: "Переданы некорректные данные при создании карточки" });
+        res.status(400).send({
+          message: "Переданы некорректные данные при создании карточки",
+        });
       } else {
         res.status(500).send({ message: "Ошибка сервера" });
       }
@@ -27,7 +29,7 @@ const deleteCard = (req, res) => {
       if (err.name === "CardNotFound") {
         res.status(err.status).send({ message: err.message });
       } else {
-      res.status(500).send({ message: "Ошибка сервера" });
+        res.status(500).send({ message: "Ошибка сервера" });
       }
     });
 };
@@ -40,4 +42,57 @@ const getAllCards = (req, res) => {
     });
 };
 
-module.exports = { createCard, deleteCard, getAllCards };
+const likeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    {
+      new: true,
+    }
+  )
+    .orFail(() => {
+      throw new IdNotFound();
+    })
+    .then((card) => res.status(200).send(card))
+    .catch((err) => {
+      console.log(err);
+      if (err.name === "IdNotFound") {
+        res.status(err.status).send({ message: err.message });
+      } else if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные для постановки лайка",
+        });
+      } else {
+        res.status(500).send({ message: "Ошибка сервера" });
+      }
+    });
+};
+
+const dislikeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    {
+      new: true,
+    }
+  )
+    .orFail(() => {
+      throw new IdNotFound();
+    })
+    .then((card) => res.status(200).send(card))
+    .catch((err) => {
+      console.log(err);
+      if (err.name === "IdNotFound") {
+        res.status(err.status).send({ message: err.message });
+      } else if (err.name === "CastError") {
+        res.status(400).send({
+          message: "Переданы некорректные данные для снятия лайка",
+        });
+      } else {
+        res.status(500).send({ message: "Ошибка сервера" });
+      }
+    });
+};
+
+
+module.exports = { createCard, deleteCard, getAllCards, likeCard, dislikeCard };

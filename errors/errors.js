@@ -20,4 +20,10 @@ class CardNotFound extends ApplicationError {
   }
 }
 
-module.exports = { UserNotFound, CardNotFound };
+class IdNotFound extends ApplicationError {
+  constructor() {
+    super(404, "Передан несуществующий _id карточки");
+  }
+}
+
+module.exports = { UserNotFound, CardNotFound, IdNotFound };
