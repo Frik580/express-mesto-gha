@@ -28,6 +28,12 @@ const deleteCard = (req, res) => {
     .catch((err) => {
       if (err.name === "CardNotFound") {
         res.status(err.status).send({ message: err.message });
+      } else if (err.name === "CastError") {
+        res
+          .status(400)
+          .send({
+            message: "Передан некорректный _id",
+          });
       } else {
         res.status(500).send({ message: "Ошибка сервера" });
       }
