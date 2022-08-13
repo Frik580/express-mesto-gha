@@ -1,5 +1,7 @@
 const Card = require('../models/card');
-const { CardNotFound, IdNotFound, errorStatus } = require('../errors/errors');
+const { errorStatus } = require('../errors/errors');
+const { CardNotFound } = require('../errors/cardnotfound');
+const { IdNotFound } = require('../errors/idnotfound');
 
 const { notCorrect, serverError } = errorStatus;
 

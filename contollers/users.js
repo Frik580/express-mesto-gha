@@ -1,5 +1,6 @@
 const User = require('../models/user');
-const { UserNotFound, errorStatus } = require('../errors/errors');
+const { errorStatus } = require('../errors/errors');
+const { UserNotFound } = require('../errors/usernotfound');
 
 const { notCorrect, serverError } = errorStatus;
 
