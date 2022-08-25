@@ -2,26 +2,32 @@ const express = require('express');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+const { createUser, login } = require('./contollers/users');
+const auth = require('./middlewares/auth');
 
 const app = express();
 
 const { errorStatus } = require('./errors/errors');
 
 const { notFound } = errorStatus;
-
 const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '62f54f3aabd0c551a2b57870',
-  };
+app.post('/signup', createUser);
+app.post('/signin', login);
 
-  next();
-});
+app.use(auth);
+
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '6304b88047744c7504551a34',
+//   };
+
+//   next();
+// });
 
 app.use('/', usersRouter);
 app.use('/', cardsRouter);

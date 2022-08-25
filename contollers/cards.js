@@ -46,6 +46,7 @@ const deleteCard = (req, res) => {
 };
 
 const getAllCards = (req, res) => {
+  console.log(req.user._id);
   Card.find({})
     .then((cards) => res.status(200).send(cards))
     .catch(() => {
