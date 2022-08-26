@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors, celebrate, Joi } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { createUser, login } = require('./contollers/users');
@@ -16,8 +17,18 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
 
-app.post('/signup', createUser);
-app.post('/signin', login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
 
 app.use(auth);
 
@@ -28,6 +39,8 @@ app.use('*', (req, res) => {
     message: 'Страница не найдена',
   });
 });
+
+app.use(errors());
 
 app.use((err, req, res, next) => {
   if (err.status) {
