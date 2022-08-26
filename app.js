@@ -7,7 +7,6 @@ const { createUser, login } = require('./contollers/users');
 const auth = require('./middlewares/auth');
 
 const app = express();
-// const { NotFound } = require('./errors/notfound');
 const { errorStatus } = require('./errors/errors');
 
 const { notFound } = errorStatus;
