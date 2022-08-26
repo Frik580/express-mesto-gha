@@ -1,14 +1,10 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-// const { errorStatus } = require('../errors/errors');
-// const { UserNotFound } = require('../errors/usernotfound');
 const { Unauthorized } = require('../errors/unauthorized');
 const { ConflictError } = require('../errors/conflicterror');
 const { BadRequest } = require('../errors/badrequest');
 const { NotFound } = require('../errors/notfound');
 const { getJwtToken } = require('../utils/jwt');
-
-// const { notCorrect, serverError } = errorStatus;
 
 const createUser = (req, res, next) => {
   const {
