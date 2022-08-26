@@ -21,20 +21,21 @@ app.post('/signin', login);
 
 app.use(auth);
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '6304b88047744c7504551a34',
-//   };
-
-//   next();
-// });
-
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
 app.use('*', (req, res) => {
   res.status(notFound).send({
     message: 'Страница не найдена',
   });
+});
+
+app.use((err, req, res, next) => {
+  if (err.status) {
+    res.status(err.status).send({ message: err.message });
+  } else {
+    res.status(500).send({ message: 'На сервере произошла ошибка' });
+  }
+  next();
 });
 
 app.listen(PORT, () => {
