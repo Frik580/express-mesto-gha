@@ -10,9 +10,6 @@ const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!email || !password) {
-    throw new BadRequest('Email или пароль не млгут быть пустыми');
-  }
   return bcrypt
     .hash(password, 10)
     .then((hash) => User.create({
@@ -23,9 +20,13 @@ const createUser = (req, res, next) => {
       password: hash,
     }))
     .then((user) => {
-      // eslint-disable-next-line no-underscore-dangle
-      const newUser = { ...user._doc };
-      delete newUser.password;
+      const newUser = {
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      };
       res.status(201).send(newUser);
     })
     .catch((err) => {
@@ -41,9 +42,6 @@ const createUser = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  if (!email || !password) {
-    throw new BadRequest('Email или пароль не млгут быть пустыми');
-  }
   return User.findOne({ email }).select('+password')
     .orFail(() => {
       throw new Unauthorized('Неправильные почта или пароль');

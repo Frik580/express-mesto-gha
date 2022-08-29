@@ -12,23 +12,39 @@ router.get('/users', getAllUsers);
 
 router.get('/users/me', getCurrentUser);
 
-router.get('/users/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().hex().length(24),
+router.get(
+  '/users/:userId',
+  celebrate({
+    params: Joi.object().keys({
+      userId: Joi.string().required().hex().length(24),
+    }),
   }),
-}), getUser);
+  getUser,
+);
 
-router.patch('/users/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+router.patch(
+  '/users/me',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().required().min(2).max(30),
+      about: Joi.string().required().min(2).max(30),
+    }),
   }),
-}), updateUser);
+  updateUser,
+);
 
-router.patch('/users/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().pattern(/https?:\/\/(w{3}\.)?([\w-]{1,}\.)+[\w._~:/?#[\]@!$&'()*+,;=]*#?/i),
+router.patch(
+  '/users/me/avatar',
+  celebrate({
+    body: Joi.object().keys({
+      avatar: Joi.string()
+        .required()
+        .pattern(
+          /https?:\/\/(w{3}\.)?([\w-]{1,}\.)+[\w._~:/?#[\]@!$&'()*+,;=]*#?/i,
+        ),
+    }),
   }),
-}), updateAvatar);
+  updateAvatar,
+);
 
 module.exports = router;

@@ -5,41 +5,47 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { createUser, login } = require('./contollers/users');
 const auth = require('./middlewares/auth');
+const { NotFound } = require('./errors/notfound');
+const { urlPattern } = require('./utils/constants');
 
 const app = express();
-const { errorStatus } = require('./errors/errors');
 
-const { notFound } = errorStatus;
 const { PORT = 3000 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(/https?:\/\/(w{3}\.)?([\w-]{1,}\.)+[\w._~:/?#[\]@!$&'()*+,;=]*#?/i),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+app.post(
+  '/signup',
+  celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().pattern(urlPattern),
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    }),
   }),
-}), createUser);
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+  createUser,
+);
+app.post(
+  '/signin',
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required(),
+    }),
   }),
-}), login);
+  login,
+);
 
 app.use(auth);
 
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
-app.use('*', (req, res) => {
-  res.status(notFound).send({
-    message: 'Страница не найдена',
-  });
+app.use('*', () => {
+  throw new NotFound('Страница не найдена');
 });
 
 app.use(errors());
